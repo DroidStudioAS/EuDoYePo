@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Lockr</title>
+</head>
+<body>
+    <div class="root">
+        <div class="guessContainer">
+            <div id="container-1"  class="guess-input-container">
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+            </div>
+            <div id="container-2" class="guess-input-container">
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+            </div>
+            <div id="container-3" class="guess-input-container">
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+            </div>
+            <div id="container-4" class="guess-input-container">
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+            </div>
+            <div id="container-5" class="guess-input-container">
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+                <div class="guess-field"></div>
+            </div>
+        </div>
+        <div class="options-container">
+            <div id="option-1" class="option">1</div>
+            <div id="option-2" class="option">2</div>
+            <div id="option-3" class="option">3</div>
+            <div id="option-4" class="option">4</div>
+        </div>
+        <div class="feedbackContainer">
+            <div id="fcontainer-1" class="guess-input-container">
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+            </div>
+            <div id="fcontainer-2" class="guess-input-container">
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+            </div>
+            <div id="fcontainer-3" class="guess-input-container">
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+            </div>
+            <div id="fcontainer-4" class="guess-input-container">
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+            </div>
+            <div id="fcontainer-5" class="guess-input-container">
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+                <div class="feedback-field"></div>
+        </div>    
+        </div>
+        <script>
+            let combination = getRandomCombination();
+            let containerInFocus = 1;
+            let clickCount = 0;
+            let guessedCombo = "";
+
+            let rightSymbolCount = 0;
+            let rightPlaceCount = 0;
+            //loop through the elements of a div
+            $(".options-container").children().each((index, option) => {
+                $(option).off('click').on('click', function() {
+                   playMove($(this).text());
+                });
+            });
+            
+            console.log(combination);
+
+            function playMove(value){
+                //check where to play
+                    //get container with the container in focus part
+                let container = $("#container-"+containerInFocus);
+                setFieldToValue(container, value)
+                console.log(guessedCombo);
+                //show feedback and increment container when getting to 4 (3)
+                clickCount++
+                if(clickCount>3){
+                    clickCount=0;
+                    //check for win or loss
+                    if(parseInt(guessedCombo)===combination){
+                        alert("victory");
+                        //reset game logic
+                        resetGame();
+                        return;
+                    }
+                    //count how many right and wrong
+                        //split the combos into char arrays
+                    let combinationSplit = combination.toString().split("");
+                    let guessedComboSplit = guessedCombo.toString().split("");
+                    console.log(guessedComboSplit);
+                    
+                    for (let i = 0; i < combinationSplit.length; i++) {
+                        if (combinationSplit[i] === guessedComboSplit[i]) {
+                            rightPlaceCount++;
+                        }
+                    }
+
+                    // Create copies of the arrays to mark which elements have been counted
+                    let combinationSplitCopy = combinationSplit.slice();
+                    let guessedComboSplitCopy = guessedComboSplit.slice();
+
+                    // Remove correctly placed symbols from the copies
+                    for (let i = 0; i < combinationSplit.length; i++) {
+    if (combinationSplit[i] === guessedComboSplit[i]) {
+        combinationSplitCopy[i] = null;
+        guessedComboSplitCopy[i] = null;
+    }
+}
+
+                    // Count symbols in the wrong place
+                    for (let i = 0; i < guessedComboSplitCopy.length; i++) {
+    if (guessedComboSplitCopy[i] !== null && combinationSplitCopy.includes(guessedComboSplitCopy[i])) {
+        rightSymbolCount++;
+        combinationSplitCopy[combinationSplitCopy.indexOf(guessedComboSplitCopy[i])] = null; // Remove the matched symbol
+    }
+}
+
+                    console.log("Spot on: " + rightPlaceCount);
+                    console.log("Right Symbol: " + rightSymbolCount);
+
+                    let feedbackArray = [rightPlaceCount, rightPlaceCount+rightSymbolCount];
+
+                    //give feedback
+                    //count how many right and wrong
+                    let feedback = $("#fcontainer-"+containerInFocus);
+                    feedback.children().each((index, field) => {
+                        if(index<=feedbackArray[0]-1){
+                            $(field).css("background-color", "red");
+                        }
+                        if(index>feedbackArray[0]-1 && index<=feedbackArray[1]-1){
+                            $(field).css("background-color", "yellow");
+                        }
+                    });
+                    //reset combo and increment container in focus
+                    guessedCombo="";
+                    containerInFocus++;
+                    rightPlaceCount = 0;
+                    rightSymbolCount = 0;
+
+                    if(containerInFocus>5){
+                        //game over
+                        alert("game over");
+                        resetGame()
+                    }
+                }
+            }
+            function getRandomCombination() {
+                let numbers = [1, 2, 3, 4];
+                for (let i = numbers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+                }
+                return parseInt(numbers.join(''), 10);
+            }
+        
+           function setFieldToValue(container, value){
+                    //go through the children to find the next field in play
+                    container.children().each((index, field) => {
+                    //play
+                    if(index===clickCount){
+                        //set the field value to the player value 
+                        $(field).text(value);
+                        guessedCombo+=$(field).text();
+                       }
+                    });
+           }
+           //reset all the fields and game flags
+           function resetGame(){
+                // go through guess container and reset all values
+                $(".guessContainer").children().each(function() {
+                    $(this).children().each(function() {
+                        $(this).text("");
+                    });
+                });
+                //go through feedback container and reset all values
+                $(".feedbackContainer").children().each(function() {
+                    $(this).children().each(function() {
+                        $(this).css("background-color", "blue");
+                    });
+                });
+                //reset ALL Game Flags:
+                    //right plafe
+                    //symbol coutner 
+                    //container in focus
+                    //click count 
+                    //random combo
+                rightPlaceCount=0;
+                rightSymbolCount=0;
+                containerInFocus=1;
+                clickCount=0;
+                guessedCombo="";
+                combination=getRandomCombination();
+                console.log(combination);
+           }
+
+        </script>
+  
+</body>
+</html>
+<style>
+    body, 
+    .root,
+    .guess-input-container{
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+
+        
+    }
+    .root{
+        width: 80vw;
+        height: 80vh;
+        background-color: orange;
+    }
+    .guessContainer, 
+    .feedbackContainer, 
+    .options-container{
+        height: 80vh;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+    .guessContainer{
+        flex: 5;
+        background-color: blue;
+    }
+    .feedbackContainer{
+        flex: 3;
+        background-color: orchid;
+    }
+    .options-container{
+        flex: 1;
+    }
+    .guess-input-container{
+        background-color: orange;
+        width: 80%;
+        height: 50%;
+        margin: 15px;
+    }
+    .guess-field,
+    .option,
+    .feedback-field{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .guess-field,
+    .option{
+        background-color: aqua;
+        height: 100%;
+        width: 60%;
+        margin: 35px;
+        border: 2px solid black;
+    }
+    .feedback-field{
+        width: 50%;
+        height: 50%;
+        background-color: blue;
+        margin: 10px;
+        border-radius: 50%;
+    }
+</style>
