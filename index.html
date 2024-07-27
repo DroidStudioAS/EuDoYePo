@@ -41,10 +41,10 @@
             </div>
         </div>
         <div class="options-container">
-            <div id="option-1" class="option">1</div>
-            <div id="option-2" class="option">2</div>
-            <div id="option-3" class="option">3</div>
-            <div id="option-4" class="option">4</div>
+            <div  id="option-1" class="option">1 <img src="/icon_dollar.svg" alt=""></div>
+            <div  id="option-2" class="option">2 <img src="/icon_euro.svg" alt=""></div>
+            <div  id="option-3" class="option">3 <img src="/icon_pound.svg" alt=""></div>
+            <div  id="option-4" class="option">4 <img src="/icon_yen.svg" alt=""></div>
         </div>
         <div class="feedbackContainer">
             <div id="fcontainer-1" class="guess-input-container">
@@ -127,9 +127,11 @@
                     checkForVictory()
                     //count how many right and wrong
                     //split the combos into char arrays
+                    console.log('guessed combo split ' + guessedCombo);
                     let combinationSplit = combination.toString().split("");
-                    let guessedComboSplit = guessedCombo.toString().split("");
-                    console.log(guessedComboSplit);
+                    let guessedComboSplit = guessedCombo.toString().split("").filter(item => item.trim() !== "");
+                    console.log('guessed combo split ' + guessedComboSplit);
+
                     
                     for (let i = 0; i < combinationSplit.length; i++) {
                         if (combinationSplit[i] === guessedComboSplit[i]) {
@@ -193,17 +195,57 @@
             }
         
            function setFieldToValue(container, value){
+            console.log(guessedCombo)
+
                     //go through the children to find the next field in play
                     container.children().each((index, field) => {
                     //play
                     if(index===clickCount){
                         //set the field value to the player value 
                         $(field).text(value);
-                        guessedCombo+=$(field).text();
+                        guessedCombo+=value.toString().trim();
+                        setFieldImage($(field),determineFieldImage(value));
                        }
                     });
+                    console.log(guessedCombo)
+           }
+
+           function determineFieldImage(option){
+            console.log(option);
+                switch(parseInt(option)){
+                    case 1:
+                        return './icon_dollar.svg'
+                        break
+                    case 2:
+                        return './icon_euro.svg'
+                        break
+                    case 3:
+                        return './icon_pound.svg'
+                        break;
+                    case 4:
+                        return './icon_yen.svg'
+                        break
+                }
+           }
+           function setFieldImage(field, imagePath){
+                console.log('setting field image')
+                console.log(imagePath);
+                let image = $('<img>', {
+                    'src': imagePath,
+                    'alt': 'kurcina'
+                })
+                $(field).append(image);
+           }
+           function undoFieldImage(field){
+                console.log('undoing field image')
+                $(field).empty();
+        
+
            }
            function checkForVictory(){
+                console.log( 'here' + guessedCombo);
+                console.log( 'here' + combination);
+
                 if(parseInt(guessedCombo)===combination){
                         alert("victory");
                         //reset game logic
@@ -255,6 +297,7 @@
                         $(field).text("");
                         guessedCombo=guessedCombo.substring(0, guessedCombo.length-1);
                         console.log('here: ' +guessedCombo);
+                        undoFieldImage(field);
                        }
                     });
                 //set its text to blank
@@ -343,6 +386,13 @@
         height: 100%;
         width: 100%;
         margin: 20px;
+
+        color: transparent;
+    }
+    .option img,
+    .guess-field img{
+        width: 100%;
+        height: 10vh;
     }
     .mobile-container{
         display: none;
