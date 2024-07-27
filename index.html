@@ -86,6 +86,7 @@
 
             let rightSymbolCount = 0;
             let rightPlaceCount = 0;
+
             //loop through the elements of a div
             $(".options-container").children().each((index, option) => {
                 $(option).off('click').on('click', function() {
@@ -94,26 +95,23 @@
             });
             
             console.log(combination);
-
+            
+            //game loop
             function playMove(value){
-                //check where to play
-                    //get container with the container in focus part
+                //get container in focus
                 let container = $("#container-"+containerInFocus);
+                //Play the selected value in the current guess container
                 setFieldToValue(container, value)
-                console.log(guessedCombo);
-                //show feedback and increment container when getting to 4 (3)
+               //increment click count for next move
                 clickCount++
+                //check if guessed all 4 fields
                 if(clickCount>3){
+                    //reset click count
                     clickCount=0;
-                    //check for win or loss
-                    if(parseInt(guessedCombo)===combination){
-                        alert("victory");
-                        //reset game logic
-                        resetGame();
-                        return;
-                    }
+                    //check for win
+                    checkForVictory()
                     //count how many right and wrong
-                        //split the combos into char arrays
+                    //split the combos into char arrays
                     let combinationSplit = combination.toString().split("");
                     let guessedComboSplit = guessedCombo.toString().split("");
                     console.log(guessedComboSplit);
@@ -130,25 +128,23 @@
 
                     // Remove correctly placed symbols from the copies
                     for (let i = 0; i < combinationSplit.length; i++) {
-    if (combinationSplit[i] === guessedComboSplit[i]) {
-        combinationSplitCopy[i] = null;
-        guessedComboSplitCopy[i] = null;
-    }
-}
-
+                        if (combinationSplit[i] === guessedComboSplit[i]) {
+                            combinationSplitCopy[i] = null;
+                            guessedComboSplitCopy[i] = null;
+                        }
+                    }
                     // Count symbols in the wrong place
                     for (let i = 0; i < guessedComboSplitCopy.length; i++) {
-    if (guessedComboSplitCopy[i] !== null && combinationSplitCopy.includes(guessedComboSplitCopy[i])) {
-        rightSymbolCount++;
-        combinationSplitCopy[combinationSplitCopy.indexOf(guessedComboSplitCopy[i])] = null; // Remove the matched symbol
-    }
-}
+                        if (guessedComboSplitCopy[i] !== null && combinationSplitCopy.includes(guessedComboSplitCopy[i])) {
+                            rightSymbolCount++;
+                            combinationSplitCopy[combinationSplitCopy.indexOf(guessedComboSplitCopy[i])] = null; // Remove the matched symbol
+                        }
+                    }
 
-                    console.log("Spot on: " + rightPlaceCount);
-                    console.log("Right Symbol: " + rightSymbolCount);
+                    //console.log("Spot on: " + rightPlaceCount);
+                    //console.log("Right Symbol: " + rightSymbolCount);
 
                     let feedbackArray = [rightPlaceCount, rightPlaceCount+rightSymbolCount];
-
                     //give feedback
                     //count how many right and wrong
                     let feedback = $("#fcontainer-"+containerInFocus);
@@ -168,7 +164,6 @@
 
                     if(containerInFocus>5){
                         //game over
-                        alert("game over");
                         resetGame()
                     }
                 }
@@ -193,8 +188,17 @@
                        }
                     });
            }
+           function checkForVictory(){
+                if(parseInt(guessedCombo)===combination){
+                        alert("victory");
+                        //reset game logic
+                        resetGame();
+                        return;
+                    }
+           }
            //reset all the fields and game flags
            function resetGame(){
+                alert('gameOver');
                 // go through guess container and reset all values
                 $(".guessContainer").children().each(function() {
                     $(this).children().each(function() {
@@ -221,6 +225,9 @@
                 combination=getRandomCombination();
                 console.log(combination);
            }
+           function giveFeedback(){
+
+           }
 
         </script>
   
@@ -235,11 +242,13 @@
         justify-content: center;
         align-items: center;
 
+        height: 100vh;
+        margin: 0;
+
         
     }
     .root{
-        width: 80vw;
-        height: 80vh;
+        height: 100vh;
         background-color: orange;
     }
     .guessContainer, 
@@ -267,6 +276,8 @@
         width: 80%;
         height: 50%;
         margin: 15px;
+        border-radius: 18px;
+    
     }
     .guess-field,
     .option,
