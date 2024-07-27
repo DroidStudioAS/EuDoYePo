@@ -261,15 +261,19 @@
         align-items: center;
     }
     .guessContainer{
-        flex: 5;
+        flex: 4;
         background-color: blue;
+        width: 40vw;
     }
     .feedbackContainer{
         flex: 3;
         background-color: orchid;
+        width: 40vw;
     }
     .options-container{
-        flex: 1;
+        flex: 2;
+        width: 20vw;
+        background-color: rosybrown;
     }
     .guess-input-container{
         background-color: orange;
@@ -277,6 +281,7 @@
         height: 50%;
         margin: 15px;
         border-radius: 18px;
+        padding: 10px;
     
     }
     .guess-field,
@@ -286,19 +291,35 @@
         justify-content: center;
         align-items: center;
     }
-    .guess-field,
-    .option{
-        background-color: aqua;
+    .guess-field{
+        width: 100%;
         height: 100%;
-        width: 60%;
-        margin: 35px;
-        border: 2px solid black;
+        background-color: violet;
+        margin: 20px;
     }
     .feedback-field{
-        width: 50%;
-        height: 50%;
+        width: 100%;
+        height: 100%;
         background-color: blue;
         margin: 10px;
         border-radius: 50%;
+    }
+    .option{
+        background-color: greenyellow;
+        height: 100%;
+        width: 100%;
+        margin: 20px;
+    }
+    @media (max-width: 600px) {
+        .feedback-field{
+            width: 15vw;
+            height: 10vh;
+            margin: 5px;
+        }
+        .guess-field{
+            width: 20vw;
+            height: 10vh;
+            margin: 5px;
+        }
     }
 </style>
