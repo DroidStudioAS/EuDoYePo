@@ -10,34 +10,34 @@
     <div class="root">
         <div class="guessContainer">
             <div id="container-1"  class="guess-input-container">
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
             </div>
             <div id="container-2" class="guess-input-container">
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
             </div>
             <div id="container-3" class="guess-input-container">
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
             </div>
             <div id="container-4" class="guess-input-container">
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
             </div>
             <div id="container-5" class="guess-input-container">
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
-                <div class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
+                <div onclick="undoMove()" class="guess-field"></div>
             </div>
         </div>
         <div class="options-container">
@@ -78,6 +78,12 @@
                 <div class="feedback-field"></div>
         </div>    
         </div>
+        <div class="mobile-container">
+            <div id="option-1" class="option">1</div>
+            <div id="option-2" class="option">2</div>
+            <div id="option-3" class="option">3</div>
+            <div id="option-4" class="option">4</div>
+        </div>
         <script>
             let combination = getRandomCombination();
             let containerInFocus = 1;
@@ -87,12 +93,21 @@
             let rightSymbolCount = 0;
             let rightPlaceCount = 0;
 
+            //set the click logic for the options on desktop vs mobile
+            if(window.innerWidth>600){
             //loop through the elements of a div
             $(".options-container").children().each((index, option) => {
                 $(option).off('click').on('click', function() {
                    playMove($(this).text());
                 });
             });
+            }else{
+                $(".mobile-container").children().each((index, option) => {
+                $(option).off('click').on('click', function() {
+                   playMove($(this).text());
+                });
+            });
+            }
             
             console.log(combination);
             
@@ -225,8 +240,27 @@
                 combination=getRandomCombination();
                 console.log(combination);
            }
-           function giveFeedback(){
-
+           function undoMove(){
+                //safety net
+                if(clickCount <= 0){
+                    return
+                }
+                //find the correct field
+                let container = $('#container-'+containerInFocus);
+                console.log(container);
+                container.children().each((index, field) => {
+                    //play
+                    if(index===clickCount){
+                        //set the field value to the player value 
+                        $(field).text("");
+                        guessedCombo=guessedCombo.substring(0, guessedCombo.length-1);
+                        console.log('here: ' +guessedCombo);
+                       }
+                    });
+                //set its text to blank
+            
+                //reduce clickCount
+                clickCount--;
            }
 
         </script>
@@ -310,16 +344,44 @@
         width: 100%;
         margin: 20px;
     }
+    .mobile-container{
+        display: none;
+    }
     @media (max-width: 600px) {
         .feedback-field{
             width: 15vw;
-            height: 10vh;
+            height: 5vh;
             margin: 5px;
         }
         .guess-field{
             width: 20vw;
             height: 10vh;
             margin: 5px;
+        }
+        .options-container{
+            display: none;
+        }
+        .option{
+            border-radius: 18px;
+        }
+        .mobile-container{
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            height: 10vh;
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-evenly;
+            align-items: center;
+            background-color: palegoldenrod;
+        }
+        .root{
+            width: 100vw;
+            height: 90vh;
+            position: absolute;
+            top: 0;
         }
     }
 </style>
