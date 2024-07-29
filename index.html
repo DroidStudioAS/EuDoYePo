@@ -84,6 +84,20 @@
             <div id="option-3" class="option">3<img src="/icon_pound.svg" alt="">  </div>
             <div id="option-4" class="option">4<img src="/icon_yen.svg" alt="">    </div>
         </div>
+
+        <div class="gameOverPopup">
+            <h3 class="message">You Won Or Lost</h3>
+            <h4 class="code-container">
+                <img src="" alt="alt" class="code-reveal-field">
+                <img src="" alt="alt" class="code-reveal-field">
+                <img src="" alt="alt" class="code-reveal-field">
+                <img src="" alt="alt" class="code-reveal-field">
+            </h4>
+            <button onclick="resetGame()" class="restart-button">
+                Play Again
+            </button>
+        </div>
+
         <script>
             let combination = getRandomCombination();
             let containerInFocus = 1;
@@ -255,9 +269,8 @@
                 console.log( 'here' + combination);
 
                 if(parseInt(guessedCombo)===combination){
-                        alert("victory");
+                        displayGameEndPopup()
                         //reset game logic
-                        resetGame();
                         return;
                     }
            }
@@ -276,6 +289,9 @@
                         $(this).css("background-color", "#fffafa");
                     });
                 });
+                //hide game Over modal
+                $(".gameOverPopup").css("display", 'none');
+
                 //reset ALL Game Flags:
                     //right plafe
                     //symbol coutner 
@@ -310,6 +326,9 @@
                         guessedCombo = guessedCombo.substring(0, guessedCombo.length - 1);
                     }
                 });
+        }
+        function displayGameEndPopup(){
+            $(".gameOverPopup").css('display', 'flex');
         }
 
 
@@ -417,6 +436,31 @@
     }
     .mobile-container{
         display: none;
+    }
+    .gameOverPopup{
+        position: fixed;
+        top: 25vh;
+        left: 25vw;
+        width: 50vw;
+        height: 50vh;
+        background-color: #fffafa;
+        display: none;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+    }
+    .message{
+        font-size: xx-large;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+    .restart-button{
+        margin-top: 20px;
+        font-size: x-large;
+        padding: 19px;
+        border-radius: 8px;
+        color: #9e4dd6;
+        border: 2px solid #9e4dd6;
     }
     @media (max-width: 600px) {
         .guess-input-container{
