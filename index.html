@@ -205,7 +205,7 @@
 
                     if(containerInFocus>5){
                         //game over
-                        resetGame()
+                        setUpModal(false);
                     }
                 }
             }
@@ -264,12 +264,13 @@
                 console.log('undoing field image');
                 field.find('img').remove();
             }
+    
            function checkForVictory(){
                 console.log( 'here' + guessedCombo);
                 console.log( 'here' + combination);
 
                 if(parseInt(guessedCombo)===combination){
-                        displayGameEndPopup()
+                        setUpModal(true)
                         //reset game logic
                         return;
                     }
@@ -329,6 +330,23 @@
         }
         function displayGameEndPopup(){
             $(".gameOverPopup").css('display', 'flex');
+        }
+        function setGameEndMessage(message){
+            $(".message").text(message);
+        }
+        function setGameEndCode(){
+            let count = 0
+            let correct = String(combination).split("");
+            $(".code-container").children().each(function() {
+                    $(this).attr('src', determineFieldImage(correct[count]));
+                    count++;
+                });
+        }
+        function setUpModal(won){
+            let message = won === true ? "Victory!" : "Loser!";
+            setGameEndMessage(message);
+            setGameEndCode();
+            displayGameEndPopup();
         }
 
 
@@ -462,6 +480,10 @@
         color: #9e4dd6;
         border: 2px solid #9e4dd6;
     }
+    .code-reveal-field{
+        width: 60px;
+        height: 60px;
+    }
     @media (max-width: 600px) {
         .guess-input-container{
             flex-flow: row wrap;
@@ -504,6 +526,12 @@
         img{
             width: 15vw;
             height: 13vh;
+        }
+        .gameOverPopup{
+            left: 10vw;
+            top: 15vh;
+            width: 80vw;
+            height: 70vh;
         }
     }
 </style>
