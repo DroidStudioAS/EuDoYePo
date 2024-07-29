@@ -237,11 +237,9 @@
                 $(field).append(image);
            }
            function undoFieldImage(field){
-                console.log('undoing field image')
-                $(field).empty();
-        
-
-           }
+                console.log('undoing field image');
+                field.find('img').remove();
+            }
            function checkForVictory(){
                 console.log( 'here' + guessedCombo);
                 console.log( 'here' + combination);
@@ -282,29 +280,28 @@
                 combination=getRandomCombination();
                 console.log(combination);
            }
-           function undoMove(){
-                //safety net
-                if(clickCount <= 0){
-                    return
+           function undoMove() {
+                // Safety net to prevent undoing beyond the first move
+                if (clickCount <= 0) {
+                    return;
                 }
-                //find the correct field
-                let container = $('#container-'+containerInFocus);
-                console.log(container);
-                container.children().each((index, field) => {
-                    //play
-                    if(index===clickCount){
-                        //set the field value to the player value 
-                        $(field).text("");
-                        guessedCombo=guessedCombo.substring(0, guessedCombo.length-1);
-                        console.log('here: ' +guessedCombo);
-                        undoFieldImage(field);
-                       }
-                    });
-                //set its text to blank
             
-                //reduce clickCount
+                // Decrement clickCount first to point to the correct field
                 clickCount--;
-           }
+            
+                // Find the correct field to undo
+                let container = $('#container-' + containerInFocus);
+                container.children().each((index, field) => {
+                    if (index === clickCount) {
+                        // Set the field value to empty and remove the image
+                        $(field).text("");
+                        undoFieldImage($(field));
+                        // Remove the last character from the guessedCombo string
+                        guessedCombo = guessedCombo.substring(0, guessedCombo.length - 1);
+                    }
+                });
+        }
+
 
         </script>
   
